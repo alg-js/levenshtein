@@ -1,0 +1,20 @@
+{
+  "name": "@alg/levenshtein-distance",
+  "version": "0.0.1",
+  "license": "MIT",
+  "exports": "./src/main.js",
+  "lock": false,
+  "imports": {
+    "@std/assert": "jsr:@std/assert@1"
+  },
+  "publish": {
+    "include": [
+      "LICENSE",
+      "README.md",
+      "src/**"
+    ],
+    "exclude": [
+      "tests/**"
+    ]
+  }
+}

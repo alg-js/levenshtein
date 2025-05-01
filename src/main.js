@@ -1,4 +1,4 @@
-/* @ts-self-types="./types.d.ts" */
+/* @ts-self-types="./main.d.ts" */
 
 /**
  * @template T

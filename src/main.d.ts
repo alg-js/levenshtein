@@ -2,13 +2,6 @@
  * Every day I pray for <https://tc39.es/proposal-type-annotations/>
  */
 
-type Sequence<T> = {
-    length: number;
-    [index: number]: T;
-};
-
-type ArrayLike<T> = string | Sequence<T>;
-
 /**
  * Computes the Levenshtein distance between two array-like objects.
  *

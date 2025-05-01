@@ -1,19 +1,17 @@
-import {assertEquals, assertGreater} from "@std/assert";
+import {assertEquals, assertGreater} from "jsr:@std/assert@1";
 import fc from "npm:fast-check";
-import {levenshteinDistance} from "@alg/levenshtein-distance";
-
-const levenshtein = levenshteinDistance;
+import {levenshteinDistance as distance} from "@alg/levenshtein";
 
 Deno.test({
     name: "ArrayLikes that are equal have an edit distance of 0",
     fn: () => {
         fc.assert(fc.property(
             fc.string(),
-            (aString) => assertEquals(levenshtein(aString, aString), 0),
+            (aString) => assertEquals(distance(aString, aString), 0),
         ));
         fc.assert(fc.property(
             fc.array(fc.nat()),
-            (anArray) => assertEquals(levenshtein(anArray, anArray), 0),
+            (anArray) => assertEquals(distance(anArray, anArray), 0),
         ));
     },
 });
@@ -44,12 +42,12 @@ Deno.test({
                         val.slice(0, i).concat(affix).concat(val.slice(i)),
                     );
                     const expect = cost * affix.length;
-                    assertEquals(levenshtein(prefixed, val, del), expect);
-                    assertEquals(levenshtein(val, prefixed, ins), expect);
-                    assertEquals(levenshtein(suffixed, val, del), expect);
-                    assertEquals(levenshtein(val, suffixed, ins), expect);
-                    assertEquals(levenshtein(infixed, val, del), expect);
-                    assertEquals(levenshtein(val, infixed, ins), expect);
+                    assertEquals(distance(prefixed, val, del), expect);
+                    assertEquals(distance(val, prefixed, ins), expect);
+                    assertEquals(distance(suffixed, val, del), expect);
+                    assertEquals(distance(val, suffixed, ins), expect);
+                    assertEquals(distance(infixed, val, del), expect);
+                    assertEquals(distance(val, infixed, ins), expect);
                 },
             ));
         }
@@ -81,12 +79,12 @@ Deno.test({
                         ));
 
                 const expect = cost * affix.length;
-                assertEquals(levenshtein(prefixed, val, substitution), expect);
-                assertEquals(levenshtein(val, prefixed, substitution), expect);
-                assertEquals(levenshtein(suffixed, val, substitution), expect);
-                assertEquals(levenshtein(val, suffixed, substitution), expect);
-                assertEquals(levenshtein(infixed, val, substitution), expect);
-                assertEquals(levenshtein(val, infixed, substitution), expect);
+                assertEquals(distance(prefixed, val, substitution), expect);
+                assertEquals(distance(val, prefixed, substitution), expect);
+                assertEquals(distance(suffixed, val, substitution), expect);
+                assertEquals(distance(val, suffixed, substitution), expect);
+                assertEquals(distance(infixed, val, substitution), expect);
+                assertEquals(distance(val, infixed, substitution), expect);
             },
         ));
     },
@@ -103,9 +101,9 @@ Deno.test({
                 const cost = {maxCost: maxCost};
                 const value = new Array(maxCost + 10).fill(0);
                 const other = new Array(maxCost + 10).fill(1);
-                assertGreater(levenshtein(value, [], cost), maxCost);
-                assertGreater(levenshtein([], value, cost), maxCost);
-                assertGreater(levenshtein(value, other, cost), maxCost);
+                assertGreater(distance(value, [], cost), maxCost);
+                assertGreater(distance([], value, cost), maxCost);
+                assertGreater(distance(value, other, cost), maxCost);
             },
         ));
     },
@@ -119,7 +117,7 @@ Deno.test({
             fc.string(),
             fc.string(),
             (str1, str2) => {
-                assertEquals(levenshtein(str1, str2), levenshtein(str2, str1));
+                assertEquals(distance(str1, str2), distance(str2, str1));
             },
         ));
     },

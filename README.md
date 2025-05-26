@@ -1,7 +1,7 @@
 # @alg/levenshtein
 
 [![JSR](https://jsr.io/badges/@alg/levenshtein)](https://jsr.io/@alg/levenshtein)
-[![License](https://img.shields.io/badge/MIT-green?label=license)](https://github.com/alg-js/levenshtein/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/Apache--2.0-green?label=license)](https://github.com/alg-js/levenshtein/blob/main/LICENSE)
 
 Generic Levenshtein distance and Damerau-Levenshtein distance implementations.
 

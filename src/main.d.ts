@@ -1,5 +1,16 @@
-/**
- * Every day I pray for <https://tc39.es/proposal-type-annotations/>
+/* Copyright 2025 James Finnie-Ansley
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 /**
@@ -52,10 +63,9 @@ export function levenshteinDistance<T1, T2>(
  * works for any object, the `damerauLevenshteinDistance` function works for
  * any primitive type.
  *
- * @template T1
- * @template T2
- * @param {ArrayLike<T1>} a
- * @param {ArrayLike<T2>} b
+ * @template T
+ * @param {ArrayLike<T>} a
+ * @param {ArrayLike<T>} b
  * @param {Object=} options
  * @param{number=} options.insertion
  * @param{number=} options.deletion
@@ -65,11 +75,10 @@ export function levenshteinDistance<T1, T2>(
  * @returns {number}
  */
 export function damerauLevenshteinDistance<
-    T1 extends string | number | bigint | boolean | undefined | symbol | null,
-    T2 extends string | number | bigint | boolean | undefined | symbol | null,
+    T extends string | number | bigint | boolean | undefined | symbol | null
 >(
-    a: ArrayLike<T1>,
-    b: ArrayLike<T2>,
+    a: ArrayLike<T>,
+    b: ArrayLike<T>,
     options?: {
         insertion?: number;
         deletion?: number;

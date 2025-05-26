@@ -1,39 +1,65 @@
+/* Copyright 2025 James Finnie-Ansley
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import {assertEquals, assertGreater, assertLess} from "jsr:@std/assert@1";
 import fc from "npm:fast-check";
-import {levenshteinDistance as distance} from "@alg/levenshtein";
+import {damerauLevenshteinDistance as dist} from "@alg/levenshtein";
 
 Deno.test({
-    name: "Simple tests",
+    name: "Simple cases",
     fn: () => {
-        assertEquals(distance("ca", "abc"), 3);
-        assertEquals(distance("", "abc"), 3);
-        assertEquals(distance("abc", ""), 3);
-        assertEquals(distance("", ""), 0);
+        const cost = {
+            transposition: 1, insertion: 1, deletion: 2, substitution: 4,
+        };
+        const cost1 = {
+            transposition: 1, insertion: 1, deletion: 1, substitution: 2,
+        };
+        assertEquals(dist("abcdefghabcdefgh", "bdafchebgdafcheg", cost), 20);
+        assertEquals(dist("abcdefghabcdefgh", "bdafchebgdafcheg", cost1), 15);
+        assertEquals(dist("acbd", "abcd"), 1);
+        assertEquals(dist("ca", "abc"), 2);
     },
 });
+
 
 Deno.test({
     name: "ArrayLikes that are equal have an edit distance of 0",
     fn: () => {
         fc.assert(fc.property(
             fc.string(),
-            (aString) => assertEquals(distance(aString, aString), 0),
+            (aString) => assertEquals(dist(aString, aString), 0),
         ));
         fc.assert(fc.property(
             fc.array(fc.nat()),
-            (anArray) => assertEquals(distance(anArray, anArray), 0),
+            (anArray) => assertEquals(dist(anArray, anArray), 0),
         ));
+    },
+});
+
+Deno.test({
+    name: "Array likes with swaps have a transposition distance",
+    fn: () => {
+        assertEquals(dist("abcd", "acbd"), 1);
+        assertEquals(dist("acbd", "abcd"), 1);
+        assertEquals(dist("ca", "abc"), 2);
     },
 });
 
 const dataTypes = [
     {val: fc.string(), other: fc.string()},
     {val: fc.array(fc.nat()), other: fc.array(fc.nat())},
-    {
-        val: fc.array(fc.dictionary(fc.string(), fc.string())),
-        other: fc.array(fc.dictionary(fc.string(), fc.string())),
-        eq: (a, b) => JSON.stringify(a) === JSON.stringify(b),
-    },
 ];
 
 Deno.test({
@@ -43,8 +69,8 @@ Deno.test({
             fc.assert(fc.property(
                 val, other, fc.integer({min: 1}),
                 (val, affix, cost) => {
-                    const ins = {insertion: cost, eq: eq};
-                    const del = {deletion: cost, eq: eq};
+                    const ins = {insertion: cost, transposition: cost, eq: eq};
+                    const del = {deletion: cost, transposition: cost, eq: eq};
                     const prefixed = affix.concat(structuredClone(val));
                     const suffixed = structuredClone(val).concat(affix);
                     const i = val.length / 2;
@@ -52,18 +78,17 @@ Deno.test({
                         val.slice(0, i).concat(affix).concat(val.slice(i)),
                     );
                     const expect = cost * affix.length;
-                    assertEquals(distance(prefixed, val, del), expect);
-                    assertEquals(distance(val, prefixed, ins), expect);
-                    assertEquals(distance(suffixed, val, del), expect);
-                    assertEquals(distance(val, suffixed, ins), expect);
-                    assertEquals(distance(infixed, val, del), expect);
-                    assertEquals(distance(val, infixed, ins), expect);
+                    assertEquals(dist(prefixed, val, del), expect);
+                    assertEquals(dist(val, prefixed, ins), expect);
+                    assertEquals(dist(suffixed, val, del), expect);
+                    assertEquals(dist(val, suffixed, ins), expect);
+                    assertEquals(dist(infixed, val, del), expect);
+                    assertEquals(dist(val, infixed, ins), expect);
                 },
             ));
         }
     },
 });
-
 
 Deno.test({
     name: "ArrayLikes with substitutions have the equivalent substitution cost",
@@ -78,6 +103,7 @@ Deno.test({
                     substitution: cost,
                     insertion: cost * affix.length,
                     deletion: cost * affix.length,
+                    transposition: cost * affix.length,
                 };
                 const prefixed = affix.concat(val.slice(affix.length));
                 const suffixed = val.slice(0, -affix.length).concat(affix);
@@ -89,17 +115,16 @@ Deno.test({
                         ));
 
                 const expect = cost * affix.length;
-                assertEquals(distance(prefixed, val, substitution), expect);
-                assertEquals(distance(val, prefixed, substitution), expect);
-                assertEquals(distance(suffixed, val, substitution), expect);
-                assertEquals(distance(val, suffixed, substitution), expect);
-                assertEquals(distance(infixed, val, substitution), expect);
-                assertEquals(distance(val, infixed, substitution), expect);
+                assertEquals(dist(prefixed, val, substitution), expect);
+                assertEquals(dist(val, prefixed, substitution), expect);
+                assertEquals(dist(suffixed, val, substitution), expect);
+                assertEquals(dist(val, suffixed, substitution), expect);
+                assertEquals(dist(infixed, val, substitution), expect);
+                assertEquals(dist(val, infixed, substitution), expect);
             },
         ));
     },
 });
-
 
 Deno.test({
     name: "ArrayLikes with a true distance over a given max cost will have distances over the max cost",
@@ -111,9 +136,9 @@ Deno.test({
                 const cost = {maxCost: maxCost};
                 const value = new Array(maxCost + 10).fill(0);
                 const other = new Array(maxCost + 10).fill(1);
-                assertGreater(distance(value, [], cost), maxCost);
-                assertGreater(distance([], value, cost), maxCost);
-                assertGreater(distance(value, other, cost), maxCost);
+                assertGreater(dist(value, [], cost), maxCost);
+                assertGreater(dist([], value, cost), maxCost);
+                assertGreater(dist(value, other, cost), maxCost);
             },
         ));
     },
@@ -130,14 +155,13 @@ Deno.test({
                 const cost = {maxCost: maxCost};
                 const value = new Array(maxCost - 5).fill(0);
                 const other = new Array(maxCost - 5).fill(1);
-                assertLess(distance(value, [], cost), maxCost);
-                assertLess(distance([], value, cost), maxCost);
-                assertLess(distance(value, other, cost), maxCost);
+                assertLess(dist(value, [], cost), maxCost);
+                assertLess(dist([], value, cost), maxCost);
+                assertLess(dist(value, other, cost), maxCost);
             },
         ));
     },
 });
-
 
 Deno.test({
     name: "Two different values should have the same edit distance regardless of order with 1 edit costs",
@@ -146,7 +170,7 @@ Deno.test({
             fc.string(),
             fc.string(),
             (str1, str2) => {
-                assertEquals(distance(str1, str2), distance(str2, str1));
+                assertEquals(dist(str1, str2), dist(str2, str1));
             },
         ));
     },

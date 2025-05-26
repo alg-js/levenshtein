@@ -5,6 +5,9 @@
 
 Generic Levenshtein distance and Damerau-Levenshtein distance implementations.
 
+For ordered tree edit distances,
+see [@alg/zhangshasha](https://jsr.io/@alg/zhangshasha).
+
 ## Install
 
 ```
@@ -16,13 +19,17 @@ deno add jsr:@alg/levenshtein
 Both the Levenshtein distance and Damerau-Levenshtein distance functions work on
 any sequences/array-likes.
 
+The Levenshtein `distance` function can be imported from `@alg/levenshtein`.
+And, the Damerau-Levenshtein `distance` function can be imported from
+`@alg/levenshtein/damerau`.
+
 ### Levenshtein Distance
 
 ```javascript
-import {levenshteinDistance as distance} from "@alg/levenshtein";
+import {distance} from "@alg/levenshtein";
 
 // Both: 2
-console.log(distance("Fooo", "foo"));  
+console.log(distance("Fooo", "foo"));
 console.log(distance([1, 2, 3, 4], [0, 2, 3]));
 ```
 
@@ -58,19 +65,19 @@ console.log(distance(arr1, arr2, options));
 
 ### Damerau-Levenshtein Distance
 
-The Damerau-Levenshtein distance function only works on array-likes of
-primitives.
+The Damerau-Levenshtein distance function is imported from the `damerau`
+entrypoint and works on array-likes of primitives.
 
 ```javascript
-import {damerauLevenshteinDistance as distance} from "@alg/levenshtein";
+import {distance} from "@alg/levenshtein/damerau";
 
 // Both: 2
-console.log(distance("ca", "abc"));  
+console.log(distance("ca", "abc"));
 console.log(distance([1, 2, 3, 4], [1, 3, 2]));
 ```
 
-As with the `levenshteinDistance` function, a cost object can be given.
-The only caveat is that the following property must hold:
+As with the Levenshtein `distance` function, a cost object can be given. The
+only caveat is that the following property must hold:
 2 * transposition >= insertion + deletion
 
 ```javascript
@@ -79,5 +86,5 @@ const dist = distance("abcdefghabcdefgh", "bdafchebgdafcheg", options);
 console.log(dist);  // 15
 ```
 
-Unlike the `levenshteinDistance` function, the equality operator cannot be
+Unlike the Levenshtein `distance` function, the equality operator cannot be
 overridden.

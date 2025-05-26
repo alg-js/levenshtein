@@ -15,7 +15,7 @@
 
 import {assertEquals, assertGreater, assertLess} from "jsr:@std/assert@1";
 import fc from "npm:fast-check";
-import {levenshteinDistance as distance} from "@alg/levenshtein";
+import {distance} from "@alg/levenshtein";
 
 Deno.test({
     name: "Simple tests",

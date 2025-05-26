@@ -14,38 +14,42 @@
  */
 
 /**
- * Computes the Levenshtein distance between two array-like objects.
+ * Computes the Damerau–Levenshtein distance between two array-like objects.
  *
- * By default, edit operations have a cost of 1; however, different
- * `insertion`, `deletion`, and `substitution` costs can be given.
+ * By default, edit operations have a cost of 1; however different `insertion`,
+ * `deletion`, `substitution`, and `transposition` costs can be given provided
+ * the following property holds:
+ * 2 * transposition >= insertion + deletion
  *
  * If `maxCost` is given, the function stops as soon as it is guaranteed the
  * edit distance will be greater than the `maxCost` and a value larger than
  * `maxCost` is returned.
  *
- * `eq` is a function that determines equality between elements from
- * `a` and `b`. By default, uses the strict equality operator `===`
+ * Note: while the Levenshtein `distance` function provided by this package
+ * works for any object, the Damerau-Levenshtein `distance` function works for
+ * any primitive type.
  *
- * @template T1
- * @template T2
- * @param {ArrayLike<T1>} a
- * @param {ArrayLike<T2>} b
+ * @template T
+ * @param {ArrayLike<T>} a
+ * @param {ArrayLike<T>} b
  * @param {Object=} options
  * @param{number=} options.insertion
  * @param{number=} options.deletion
  * @param{number=} options.substitution
+ * @param{number=} options.transposition
  * @param{number=} options.maxCost
- * @param{((e1: T1, e2: T2) => boolean)=} options.eq
  * @returns {number}
  */
-export function distance<T1, T2>(
-    a: ArrayLike<T1>,
-    b: ArrayLike<T2>,
+export function distance<
+    T extends string | number | bigint | boolean | undefined | symbol | null
+>(
+    a: ArrayLike<T>,
+    b: ArrayLike<T>,
     options?: {
         insertion?: number;
         deletion?: number;
         substitution?: number;
+        transposition?: number;
         maxCost?: number;
-        eq?: (e1: T1, e2: T2) => boolean;
     },
 ): number;

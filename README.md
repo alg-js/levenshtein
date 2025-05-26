@@ -31,7 +31,7 @@ can be overridden:
 
 ```javascript
 const options = {substitution: 3};
-console.log(dist("Fooo", "foo", options));
+console.log(distance("Fooo", "foo", options));
 // 3 - 2 deletes, 1 insert
 ```
 
@@ -41,7 +41,7 @@ returns a value larger than the max cost.
 
 ```javascript
 const options = {maxCost: 3};
-console.log(dist("Foooooooooo", "Foo", options));
+console.log(distance("Foooooooooo", "Foo", options));
 // Some number greater than 3
 ```
 
@@ -51,8 +51,8 @@ A function defining the `=` relation can be given — by default `===` is used:
 const arr1 = [{val: 1}, {val: 2}, {val: 3}];
 const arr2 = [{val: 2}, {val: 3}, {val: 4}];
 
-const options = {eq: (a, b) => JSON.stringify(a) === JSON.stringify(b)};
-console.log(dist(arr1, arr2, options));
+const options = {eq: (a, b) => a.val === b.val};
+console.log(distance(arr1, arr2, options));
 // 2 - 1 delete, 1 insert
 ```
 
@@ -71,7 +71,7 @@ console.log(distance([1, 2, 3, 4], [1, 3, 2]));
 
 As with the `levenshteinDistance` function, a cost object can be given.
 The only caveat is that the following property must hold:
-2 * transposition > insertion + deletion
+2 * transposition >= insertion + deletion
 
 ```javascript
 const options = {transposition: 1, insertion: 1, deletion: 1, substitution: 2};

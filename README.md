@@ -1,7 +1,7 @@
 # @alg/levenshtein
 
 [![JSR](https://jsr.io/badges/@alg/levenshtein)](https://jsr.io/@alg/levenshtein)
-[![License](https://img.shields.io/badge/Apache--2.0-green?label=license)](https://github.com/alg-js/levenshtein/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/Apache--2.0-green?label=license)](https://codeberg.org/algjs/levenshtein/src/branch/main/LICENSE)
 
 Generic Levenshtein distance and Damerau-Levenshtein distance implementations.
 
@@ -13,6 +13,27 @@ see [@alg/zhangshasha](https://jsr.io/@alg/zhangshasha).
 ```
 deno add jsr:@alg/levenshtein
 ```
+
+<details>
+<summary>Other Install Options</summary>
+
+```bash
+npx jsr add @alg/levenshtein
+```
+```bash
+bunx jsr add @alg/levenshtein
+```
+```bash
+pnpm i jsr:@alg/levenshtein
+```
+```bash
+yarn add jsr:@alg/levenshtein
+```
+```bash
+vlt install jsr:@alg/levenshtein
+```
+
+</details>
 
 ## Example
 
